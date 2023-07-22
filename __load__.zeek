@@ -1,2 +1,2 @@
-@load notice-slack.zeek
-@load notice-slack.js
+@load ./notice-slack.zeek
+@load ./notice-slack.js

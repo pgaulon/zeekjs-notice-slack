@@ -7,20 +7,20 @@ var slack_username = zeek.global_vars['Notice::slack_username'];
 var slack_emoji = zeek.global_vars['Notice::slack_emoji'];
 
 function slack_json_payload(notice, channel, username, emoji) {
-    var text = `${notice.note}: ${notice.msg}`;
-    if ('sub' in notice) {
-        text += ` (${notice.sub})`;
+    let text = `${notice.note}: ${notice.msg}`;
+    if (notice.sub) {
+        text += `, (${notice.sub})`;
     }
-    if ('id' in notice) {
+    if (notice.id && notice.id.orig_h && notice.id.orig_p && notice.id.resp_h && notice.id.resp_p) {
         text += `, Connection: ${notice.id.orig_h}:${notice.id.orig_p} -> ${notice.id.resp_h}:${notice.id.resp_p}`
-        if ('uid' in notice) {
-            text += `, Connection uid: ${notice.uid}`
-        }
     }
-    else if ('src' in notice) {
+    if (notice.uid) {
+        text += `, Connection uid: ${notice.uid}`
+    }
+    if (notice.src) {
         text += `, Source: ${notice.src}`;
     }
-    var slack_message = {
+    let slack_message = {
         text: text,
         channel: channel,
         username: username,
@@ -37,7 +37,7 @@ function slack_send_notice(webhook, json_payload) {
         }
     };
 
-    var req = https.request(webhook, requestOptions, (res) => {
+    let req = https.request(webhook, requestOptions, (res) => {
         let response = '';
         res.on('data', (d) => {
             response += d;
@@ -51,8 +51,8 @@ function slack_send_notice(webhook, json_payload) {
     req.end();
 }
 
-zeek.hook('Notice::Info', (notice) => {
-    if ( ACTION_SLACK in notice.actions ) {
+zeek.hook('Notice::policy', (notice) => {
+    if ( notice.actions.includes('Notice::ACTION_SLACK') ) {
         slack_send_notice(slack_webhook_url, slack_json_payload(notice, slack_channel, slack_username, slack_emoji));
     }
 });
