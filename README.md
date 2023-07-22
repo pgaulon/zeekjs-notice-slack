@@ -1,5 +1,5 @@
 # zeekjs-notice-slack
-Add [Zeek Notices](https://docs.zeek.org/en/master/frameworks/notice.html) via [Slack webhooks](https://api.slack.com/messaging/webhooks) using [ZeekJS](https://zeekjs.readthedocs.io/en/latest/)
+Add [Zeek Notice](https://docs.zeek.org/en/master/frameworks/notice.html) via [Slack webhooks](https://api.slack.com/messaging/webhooks) using [ZeekJS](https://zeekjs.readthedocs.io/en/latest/)
 
 # Usage
 
@@ -26,7 +26,7 @@ hook Notice::policy(n: Notice::Info)
 
 # Testing
 
-## System preparations
+## System preparation
 
 - Using [Ubuntu 22.10 Vagrantfile](https://app.vagrantup.com/ubuntu/boxes/kinetic64)
 - Installing [Zeek via packages](https://build.opensuse.org/package/binaries/security:zeek/zeek/xUbuntu_22.10) and dependencies
@@ -39,7 +39,7 @@ $ cd zeekjs-notice-slack
 $ sudo /opt/zeek/bin/zkg install .
 ```
 
-## Preparating a test pcap
+## Pcap preparation
 
 Using HTTP SQLi to generate notices via the [detect-sql.zeek policy](https://github.com/zeek/zeek/blob/master/scripts/policy/protocols/http/detect-sqli.zeek)
 ```
