@@ -29,30 +29,42 @@ function slack_json_payload(notice, channel, username, emoji) {
     return JSON.stringify(slack_message);
 }
 
-function slack_send_notice(webhook, json_payload) {
-    const requestOptions = {
+async function slack_send_notice(webhook, json_payload) {
+    const request_options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         }
     };
 
-    let req = https.request(webhook, requestOptions, (res) => {
-        let response = '';
-        res.on('data', (d) => {
-            response += d;
+    let p = new Promise((resolve, reject) => {
+        let req = https.request(webhook, request_options, (res) => {
+            let response_body = '';
+            res.on('data', (d) => {
+                response_body += d;
+            });
+            res.on('end', () => {
+                if (res.statusCode !== 200) {
+                    reject(response_body);
+                }
+                else {
+                    resolve(response_body);
+                }
+            });
         });
+        req.on('error', (e) => {
+            reject(e);
+        });
+        req.write(json_payload);
+        req.end();
     });
-
-    req.on('error', (e) => {
-        console.error(e);
-    });
-    req.write(json_payload);
-    req.end();
+    return await p;
 }
 
 zeek.hook('Notice::policy', (notice) => {
     if ( notice.actions.includes('Notice::ACTION_SLACK') ) {
-        slack_send_notice(slack_webhook_url, slack_json_payload(notice, slack_channel, slack_username, slack_emoji));
+        slack_send_notice(slack_webhook_url, slack_json_payload(notice, slack_channel, slack_username, slack_emoji)).catch((error) => {
+            console.error(error);
+        });
     }
 });
