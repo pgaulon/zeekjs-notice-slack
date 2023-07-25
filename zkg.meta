@@ -1,4 +1,5 @@
 [package]
 summary = Zeek Notices via Slack webhooks
-tags = zeekjs, plugin, notices, slack, webhook
+tags = zeekjs, zeek plugin, notices, slack, webhook
 description = Package extending the Notice Framework to include to send Notices via Slack webhooks.
+depends = zeekjs
