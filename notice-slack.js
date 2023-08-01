@@ -61,7 +61,7 @@ async function slack_send_notice(webhook, json_payload) {
     return await p;
 }
 
-zeek.hook('Notice::policy', (notice) => {
+zeek.hook('Notice::notice', (notice) => {
     if ( notice.actions.includes('Notice::ACTION_SLACK') ) {
         slack_send_notice(slack_webhook_url, slack_json_payload(notice, slack_channel, slack_username, slack_emoji)).catch((error) => {
             console.error(error);
